@@ -7,10 +7,13 @@ import collections
 import re
 from core import irc
 from core import main
+from datetime import datetime
 
 bot = None
 conn = None
 db = None
+mock_time = None
+mock_datetime_handler = None
 
 
 def make_signature(f):
@@ -160,12 +163,43 @@ class Nick:
         main.main(conn, out)
 
 
+class MockTime(object):
+
+    def __init__(self):
+        self.curr_time = 1000000000.000
+
+    def time(self):
+        return self.curr_time
+
+
+class MockDateTimeHandler(object):
+
+    def __init__(self, moduleWithTimeSince=None):
+        self.module = moduleWithTimeSince
+
+    def update(self, timestamp):
+        if self.module.timesince:
+            mock_datetime = datetime.fromtimestamp(mock_time.time())
+            self.module.timesince.timesince.__defaults__ = (mock_datetime,)
+
+
+def reset_time():
+    global mock_datetime_handler
+    mock_time.curr_time = 1000000000.000
+
+    mock_datetime_handler.update(mock_time.curr_time)
+
+
 class PluginTest(unittest.TestCase):
 
     def setUp(self):
+        bot.thoughts = []
+        # reset_time()
         pass
 
     def preparePlugins(self, module):
+        global mock_datetime_handler
+
         allFunctions = inspect.getmembers(module)
         functions = [func[1] for func in allFunctions
                      if type(func[1]).__name__ == 'function']
@@ -175,33 +209,38 @@ class PluginTest(unittest.TestCase):
                 bot.threads[func] = FakeHandler(func)
         fake_reload(module)
 
-                # for kind, data in func._hook:
-                #    bot.plugs[kind] += [data]
-                #
-                # print '### new plugin (type: %s) loaded:' % \
-                #        kind, reload.format_plug(data)
+        module.time = mock_time
+        if module.timesince:
+            mock_datetime_handler = MockDateTimeHandler(module)
+        else:
+            mock_datetime_handler = MockDateTimeHandler()
+        reset_time()
 
     def shouldSay(self, expectedMessage):
-        for thought in bot.thoughts:
-            if thought[1] == expectedMessage:
-                return True
-        if len(bot.thoughts) == 1:
-            response = bot.thoughts[0][1]
-        else:
-            response = 'a whole bunch of stuff I don\'t want to print out'
+        thought = bot.thoughts.pop(0)
+        if thought[1] == expectedMessage:
+            return True
+
         self.fail("Skybot didn't respond with '%s'; got '%s'" %
-                  (expectedMessage, response))
+                  (expectedMessage, thought[1]))
 
 
 def setUpModule():
-    global db, bot, conn
+    global db, bot, conn, mock_time, mock_datetime
     db = sqlite3.connect(":memory:")
     bot = FakeBot()
     bot.get_db_connection = lambda x, y: db
     main.bot = bot
     main.re = re
     conn = TestIRC()
+    mock_time = MockTime()
+    mock_datetime = datetime.fromtimestamp(mock_time.time())
 
 
 def nick(nick):
     return Nick(nick)
+
+
+def after(period, units):
+    mock_time.curr_time += period * 60
+    mock_datetime_handler.update(mock_time.curr_time)
