@@ -223,6 +223,11 @@ class PluginTest(unittest.TestCase):
         self.fail("Skybot didn't respond with '%s'; got '%s'" %
                   (expectedMessage, thought[1]))
 
+    def shouldBeSilent(self):
+        if len(bot.thoughts) > 0:
+            self.fail("Bot shouldn't respond, but was thinking all of this: %s"
+                      % (bot.thoughts))
+
 
 def setUpModule():
     global db, bot, conn, mock_time, mock_datetime
@@ -245,11 +250,11 @@ def after(period, units="minutes"):
         'microseconds': 0.001,
         'seconds': 1.,
         'minutes': 60,
-        'hours': 60*60,
-        'days': 60*60*24,
-        'weeks': 60*60*24*7,
-        'months': 60*60*24*30,
-        'years': 60*60*24*365
+        'hours': 60 * 60,
+        'days': 60 * 60 * 24,
+        'weeks': 60 * 60 * 24 * 7,
+        'months': 60 * 60 * 24 * 30,
+        'years': 60 * 60 * 24 * 365
     }
     if units not in table:
         units = "minutes"
