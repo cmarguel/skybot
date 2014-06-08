@@ -194,7 +194,6 @@ class PluginTest(unittest.TestCase):
 
     def setUp(self):
         bot.thoughts = []
-        # reset_time()
         pass
 
     def preparePlugins(self, module):
@@ -241,6 +240,18 @@ def nick(nick):
     return Nick(nick)
 
 
-def after(period, units):
-    mock_time.curr_time += period * 60
+def after(period, units="minutes"):
+    table = {
+        'microseconds': 0.001,
+        'seconds': 1.,
+        'minutes': 60,
+        'hours': 60*60,
+        'days': 60*60*24,
+        'weeks': 60*60*24*7,
+        'months': 60*60*24*30,
+        'years': 60*60*24*365
+    }
+    if units not in table:
+        units = "minutes"
+    mock_time.curr_time += period * table[units]
     mock_datetime_handler.update(mock_time.curr_time)

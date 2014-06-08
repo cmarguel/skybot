@@ -31,3 +31,11 @@ class SeenTest(plugin_test.PluginTest):
         nick("Bob").says(".seen Art")
         self.shouldSay(
             "Bob: art was last seen 10 minutes ago saying: hello world")
+
+    def test_seen_after_several_days(self):
+        nick("Art").says("hello world")
+
+        after(10, "days")
+        nick("Bob").says(".seen Art")
+        self.shouldSay(
+            "Bob: art was last seen 1 week, 3 days ago saying: hello world")
