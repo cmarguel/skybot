@@ -226,6 +226,13 @@ class PluginTest(unittest.TestCase):
             self.fail("Bot shouldn't respond, but was thinking all of this: %s"
                       % (bot.thoughts))
 
+    def shouldPM(self, expectedRecipient, expectedMessage):
+        thought = bot.thoughts.pop(0)
+        if thought[0] == expectedRecipient and thought[1] == expectedMessage:
+            return True
+        self.fail("Skybot is supposed to tell %s '%s'; instead told %s '%s'" %
+                  (expectedRecipient, expectedMessage, thought[0], thought[1]))
+
 
 def setUpModule():
     global db, bot, conn, mock_time, mock_datetime
