@@ -80,7 +80,7 @@ def fake_reload(pluginToTest):
         if kind == 'command':
             continue
         # print '    %s:' % kind
-        #for plug in plugs:
+        # for plug in plugs:
             # print format_plug(plug, kind=kind, lpad=6)
     # print
 
@@ -141,20 +141,22 @@ class TestIRC(irc.IRC):
         bot.thoughts += [(chan, msg)]
 
 
+def construct_out_params(nick='buttbot', msg='butts', chan='#test'):
+    prefix = ":%s!~%s@butts.buttbutt.buttbutt.IP" % (nick, nick)
+    params = "%s :%s" % (chan, msg)
+    return ["%s PRIVMSG %s" % (prefix, params),
+            prefix, 'PRIVMSG', params, nick, nick,
+            'butts.buttbutt.buttbutt.IP',
+            [chan, msg], msg]
+
+
 class Nick:
 
     def __init__(self, nick):
         self.nick = nick
 
     def says(self, msg):
-        # out = [u':Argue!~Argue___@1D5EB980.CB99A000.75626F1E.IP PRIVMSG
-        # lloidtest :foobar',
-        # u':Argue!~Argue___@1D5EB980.CB99A000.75626F1E.IP', u'PRIVMSG',
-        # u'#lloidtest :foobar', u'Argue', u'~Argue___',
-        # u'1D5EB980.CB99A000.75626F1E.IP', [u'#lloidtest', u'foobar'],
-        # u'foobar']
-        out = [msg, 'prefix', 'PRIVMSG', 'params', self.nick, 'user', 'host',
-               ['#chan_name', msg], msg]
+        out = construct_out_params(self.nick, msg)
         main.main(conn, out)
 
 
