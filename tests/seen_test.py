@@ -6,8 +6,7 @@ from plugin_test import *
 class SeenTest(plugin_test.PluginTest):
 
     def setUp(self):
-        plugin_test.PluginTest.setUp(self)
-        plugin_test.PluginTest.preparePlugins(self, plugins.seen)
+        plugin_test.PluginTest.setUp(self, plugins.seen)
 
     def test_seen_self(self):
         nick("Art").says("hello world")

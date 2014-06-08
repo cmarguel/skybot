@@ -183,22 +183,15 @@ class MockDateTimeHandler(object):
             self.module.timesince.timesince.__defaults__ = (mock_datetime,)
 
 
-def reset_time():
-    global mock_datetime_handler
-    mock_time.curr_time = 1000000000.000
-
-    mock_datetime_handler.update(mock_time.curr_time)
-
-
 class PluginTest(unittest.TestCase):
 
-    def setUp(self):
+    def setUp(self, module):
         bot.thoughts = []
-        pass
 
-    def preparePlugins(self, module):
-        global mock_datetime_handler
+        self.__prepare_plugins(module)
+        self.__mock_time(module)
 
+    def __prepare_plugins(self, module):
         allFunctions = inspect.getmembers(module)
         functions = [func[1] for func in allFunctions
                      if type(func[1]).__name__ == 'function']
@@ -208,12 +201,17 @@ class PluginTest(unittest.TestCase):
                 bot.threads[func] = FakeHandler(func)
         fake_reload(module)
 
+    def __mock_time(self, module):
+        global mock_datetime_handler
+
         module.time = mock_time
         if module.timesince:
             mock_datetime_handler = MockDateTimeHandler(module)
         else:
             mock_datetime_handler = MockDateTimeHandler()
-        reset_time()
+        mock_time.curr_time = 1000000000.000
+
+        mock_datetime_handler.update(mock_time.curr_time)
 
     def shouldSay(self, expectedMessage):
         thought = bot.thoughts.pop(0)
