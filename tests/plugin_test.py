@@ -187,6 +187,8 @@ class PluginTest(unittest.TestCase):
                 return True
         if len(bot.thoughts) == 1:
             response = bot.thoughts[0][1]
+        else:
+            response = 'a whole bunch of stuff I don\'t want to print out'
         self.fail("Skybot didn't respond with '%s'; got '%s'" %
                   (expectedMessage, response))
 
