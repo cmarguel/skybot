@@ -13,3 +13,13 @@ class SeenTest(plugin_test.PluginTest):
         nick("Art").says("hello world")
         nick("Art").says(".seen Art")
         self.shouldSay("Art: Have you looked in a mirror lately?")
+
+    def test_seen_other(self):
+        nick("Art").says("hello world")
+        nick("Bob").says(".seen Art")
+        self.shouldSay(
+            "Bob: art was last seen 0 minutes ago saying: hello world")
+
+    def test_never_seen(self):
+        nick("Bob").says(".seen Art")
+        self.shouldSay("Bob: I've never seen art")

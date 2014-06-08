@@ -47,8 +47,8 @@ def fake_reload(pluginToTest):
             for kind, data in func._hook:
                 bot.plugs[kind] += [data]
 
-    #print '  plugin listing:'
-    #print bot.plugs
+    # print '  plugin listing:'
+    # print bot.plugs
 
     bot.commands = {}
     for plug in bot.plugs['command']:
@@ -64,7 +64,7 @@ def fake_reload(pluginToTest):
         # hack to make commands with multiple aliases
         # print nicely
 
-        print '    command:'
+        # print '    command:'
         commands = collections.defaultdict(list)
 
         for name, (func, args) in bot.commands.iteritems():
@@ -74,15 +74,15 @@ def fake_reload(pluginToTest):
             names.sort(key=lambda x: (-len(x), x))  # long names first
             out = ' ' * 6 + '%s:%s:%s' % sig
             out += ' ' * (50 - len(out)) + ', '.join(names)
-            print out
+            # print out
 
     for kind, plugs in sorted(bot.plugs.iteritems()):
         if kind == 'command':
             continue
-        print '    %s:' % kind
-        for plug in plugs:
-            print format_plug(plug, kind=kind, lpad=6)
-    print
+        # print '    %s:' % kind
+        #for plug in plugs:
+            # print format_plug(plug, kind=kind, lpad=6)
+    # print
 
 
 class FakeHandler(object):
@@ -147,7 +147,12 @@ class Nick:
         self.nick = nick
 
     def says(self, msg):
-        #out = [u':Argue!~Argue___@1D5EB980.CB99A000.75626F1E.IP PRIVMSG #lloidtest :foobar', u':Argue!~Argue___@1D5EB980.CB99A000.75626F1E.IP', u'PRIVMSG', u'#lloidtest :foobar', u'Argue', u'~Argue___', u'1D5EB980.CB99A000.75626F1E.IP', [u'#lloidtest', u'foobar'], u'foobar']
+        # out = [u':Argue!~Argue___@1D5EB980.CB99A000.75626F1E.IP PRIVMSG
+        # lloidtest :foobar',
+        # u':Argue!~Argue___@1D5EB980.CB99A000.75626F1E.IP', u'PRIVMSG',
+        # u'#lloidtest :foobar', u'Argue', u'~Argue___',
+        # u'1D5EB980.CB99A000.75626F1E.IP', [u'#lloidtest', u'foobar'],
+        # u'foobar']
         out = [msg, 'prefix', 'PRIVMSG', 'params', self.nick, 'user', 'host',
                ['#chan_name', msg], msg]
         main.main(conn, out)
@@ -178,7 +183,10 @@ class PluginTest(unittest.TestCase):
         for thought in bot.thoughts:
             if thought[1] == expectedMessage:
                 return True
-        self.fail("Skybot didn't respond with '%s'" % (expectedMessage))
+        if len(bot.thoughts) == 1:
+            response = bot.thoughts[0][1]
+        self.fail("Skybot didn't respond with '%s'; got '%s'" %
+                  (expectedMessage, response))
 
 
 def setUpModule():
