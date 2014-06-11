@@ -88,6 +88,13 @@ def fake_reload(pluginToTest):
     # print
 
 
+def reset_db():
+    global bot, db
+    bot.get_db_connection(None, None).close()
+    db = sqlite3.connect(":memory:")
+    bot.get_db_connection = lambda x, y: db
+
+
 class FakeHandler(object):
 
     '''Runs plugins in their own threads (ensures order)'''
@@ -187,6 +194,7 @@ class PluginTest(unittest.TestCase):
 
     def setUp(self, module):
         bot.thoughts = []
+        reset_db()
 
         self.__prepare_plugins(module)
         if hasattr(module, 'timesince'):
@@ -246,8 +254,8 @@ class PluginTest(unittest.TestCase):
 
 def setUpModule():
     global db, bot, conn, mock_time, mock_datetime
-    db = sqlite3.connect(":memory:")
     bot = FakeBot()
+    db = sqlite3.connect(":memory:")
     bot.get_db_connection = lambda x, y: db
     main.bot = bot
     main.re = re
