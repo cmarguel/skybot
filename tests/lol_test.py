@@ -47,3 +47,6 @@ class SeenTest(plugin_test.PluginTest):
         nick('Cat').says('lol')
         nick('Bob').says('.lols Art')
         self.shouldSay("Bob: Art's hilarity ranking is 2")
+
+        nick('Bob').says('.lols Cat')
+        self.shouldSay("Bob: Cat is not funny.")
