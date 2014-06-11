@@ -189,7 +189,8 @@ class PluginTest(unittest.TestCase):
         bot.thoughts = []
 
         self.__prepare_plugins(module)
-        self.__mock_time(module)
+        if hasattr(module, 'timesince'):
+            self.__mock_time(module)
 
     def __prepare_plugins(self, module):
         allFunctions = inspect.getmembers(module)
@@ -204,8 +205,9 @@ class PluginTest(unittest.TestCase):
     def __mock_time(self, module):
         global mock_datetime_handler
 
-        module.time = mock_time
-        if module.timesince:
+        if hasattr(module, 'time'):
+            module.time = mock_time
+        if hasattr(module, 'timesince'):
             mock_datetime_handler = MockDateTimeHandler(module)
         else:
             mock_datetime_handler = MockDateTimeHandler()
@@ -214,6 +216,10 @@ class PluginTest(unittest.TestCase):
         mock_datetime_handler.update(mock_time.curr_time)
 
     def shouldSay(self, expectedMessage):
+        if len(bot.thoughts) == 0:
+            self.fail("Skybot remained silent, but he should have said: %s" %
+                      expectedMessage)
+            return
         thought = bot.thoughts.pop(0)
         if thought[1] == expectedMessage:
             return True
@@ -227,6 +233,10 @@ class PluginTest(unittest.TestCase):
                       % (bot.thoughts))
 
     def shouldPM(self, expectedRecipient, expectedMessage):
+        if len(bot.thoughts) == 0:
+            self.fail("Skybot remained silent, but he should have sent \
+                        %s this PM: %s" % (expectedRecipient, expectedMessage))
+            return
         thought = bot.thoughts.pop(0)
         if thought[0] == expectedRecipient and thought[1] == expectedMessage:
             return True
