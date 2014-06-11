@@ -216,6 +216,10 @@ class PluginTest(unittest.TestCase):
         mock_datetime_handler.update(mock_time.curr_time)
 
     def shouldSay(self, expectedMessage):
+        if len(bot.thoughts) == 0:
+            self.fail("Skybot remained silent, but he should have said: %s" %
+                      expectedMessage)
+            return
         thought = bot.thoughts.pop(0)
         if thought[1] == expectedMessage:
             return True
@@ -229,6 +233,10 @@ class PluginTest(unittest.TestCase):
                       % (bot.thoughts))
 
     def shouldPM(self, expectedRecipient, expectedMessage):
+        if len(bot.thoughts) == 0:
+            self.fail("Skybot remained silent, but he should have sent \
+                        %s this PM: %s" % (expectedRecipient, expectedMessage))
+            return
         thought = bot.thoughts.pop(0)
         if thought[0] == expectedRecipient and thought[1] == expectedMessage:
             return True
