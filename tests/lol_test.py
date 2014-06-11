@@ -34,3 +34,9 @@ class SeenTest(plugin_test.PluginTest):
         nick('A').says('lol')
         nick('A').says('.lols')
         self.shouldSay("A: You're not funny.")
+
+    def test_lols_with_whitespace(self):
+        nick('A').says('funny thing')
+        nick('B').says(' lol ')
+        nick('A').says('.lols')
+        self.shouldSay("A: Your hilarity ranking is 1")

@@ -36,7 +36,7 @@ def is_memorable(nick, msg):
 
 
 def is_lol(msg):
-    return msg == 'lol'
+    return msg.strip() == 'lol'
 
 
 @hook.command
