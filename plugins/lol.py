@@ -43,7 +43,12 @@ def is_lol(msg):
 def lols(inp, nick='', chan='', db=None, input=None):
     db_init(db)
 
-    return Person.get(nick).describe_score()
+    thirdPerson = False
+    if inp is not None and inp.strip() != "":
+        nick = inp
+        thirdPerson = True
+
+    return Person.get(nick).describe_score(thirdPerson)
 
 
 class Person(object):
@@ -76,8 +81,12 @@ class Person(object):
                         quote) values(?,?,?,?)", (self.to_tuple()))
         Person.db.commit()
 
-    def describe_score(self):
-        if self.score == 0:
+    def describe_score(self, thirdPerson=False):
+        if self.score == 0 and thirdPerson:
+            return "%s is not funny." % self.name
+        elif self.score == 0 and not thirdPerson:
             return "You're not funny."
+        elif thirdPerson:
+            return "%s's hilarity ranking is %d" % (self.name, self.score)
         else:
             return "Your hilarity ranking is %d" % self.score

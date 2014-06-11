@@ -40,3 +40,10 @@ class SeenTest(plugin_test.PluginTest):
         nick('B').says(' lol ')
         nick('A').says('.lols')
         self.shouldSay("A: Your hilarity ranking is 1")
+
+    def test_track_other_people_lols(self):
+        nick('Art').says('another funny thing')
+        nick('Bob').says('lol')
+        nick('Cat').says('lol')
+        nick('Bob').says('.lols Art')
+        self.shouldSay("Bob: Art's hilarity ranking is 2")
