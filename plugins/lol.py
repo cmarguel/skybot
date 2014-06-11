@@ -12,7 +12,7 @@ def db_init(db):
 
 
 @hook.singlethread
-@hook.event('PRIVMSG', ignorebots=False)
+@hook.event('PRIVMSG', ignorebots=True)
 def seeninput(paraml, input=None, db=None, bot=None):
     global last_seen
 
@@ -41,6 +41,8 @@ def is_lol(msg):
 
 @hook.command
 def lols(inp, nick='', chan='', db=None, input=None):
+    db_init(db)
+
     return Person.get(nick).describe_score()
 
 
@@ -53,7 +55,7 @@ class Person(object):
     @classmethod
     def get(cls, nick):
         params = cls.db.execute("select name, score, record, quote from lols\
-                                 where name = ?", (nick)).fetchone()
+                                 where name = ?", (nick,)).fetchone()
         if params is None:
             return Person((nick, 0, 0, None))
         else:
