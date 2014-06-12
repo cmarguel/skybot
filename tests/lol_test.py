@@ -35,6 +35,12 @@ class SeenTest(plugin_test.PluginTest):
         nick('A').says('.lols')
         self.shouldSay("A: You're not funny.")
 
+    def test_case_insensitive(self):
+        nick('A').says('Something unfunny')
+        nick('B').says('lol')
+        nick('B').says('.lols a')
+        self.shouldSay("B: A's hilarity ranking is 1")
+
     def test_lols_with_whitespace(self):
         nick('A').says('funny thing')
         nick('B').says(' lol ')

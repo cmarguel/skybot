@@ -83,7 +83,7 @@ class Person(object):
     @classmethod
     def get(cls, nick):
         params = cls.db.execute("select name, score, record, quote from lols\
-                                 where name = ?", (nick,)).fetchone()
+                                 where name = ? collate nocase", (nick,)).fetchone()
         if params is None:
             return Person((nick, 0, 0, None))
         else:
