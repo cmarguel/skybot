@@ -1,6 +1,8 @@
 from util import hook
 
 last_seen = None
+last_quote = None
+streak = 0
 
 
 def db_init(db):
@@ -14,7 +16,7 @@ def db_init(db):
 @hook.singlethread
 @hook.event('PRIVMSG', ignorebots=True)
 def seeninput(paraml, input=None, db=None, bot=None):
-    global last_seen
+    global last_seen, streak, last_quote
 
     db_init(db)
 
@@ -25,12 +27,19 @@ def seeninput(paraml, input=None, db=None, bot=None):
         if last_seen != nick:
             person = Person.get(last_seen)
             person.score += 1
+            streak += 1
+            if person.record <= streak:
+                person.record = streak
+                person.quote = last_quote
             person.save()
 
     elif is_memorable(nick, msg):
         last_seen = nick
+        last_quote = msg
+        streak = 0
 
 
+# Examples of not memorable things: lol, bot commands?
 def is_memorable(nick, msg):
     return not is_lol(msg)
 
@@ -48,7 +57,21 @@ def lols(inp, nick='', chan='', db=None, input=None):
         nick = inp
         thirdPerson = True
 
-    return Person.get(nick).describe_score(thirdPerson)
+    person = Person.get(nick)
+    return person.describe_score(thirdPerson)
+
+
+@hook.command
+def chain(inp, nick='', chan='', db=None, input=None):
+    db_init(db)
+
+    thirdPerson = False
+    if inp is not None and inp.strip() != "":
+        nick = inp
+        thirdPerson = True
+
+    person = Person.get(nick)
+    return person.describe_record(thirdPerson)
 
 
 class Person(object):
@@ -90,3 +113,15 @@ class Person(object):
             return "%s's hilarity ranking is %d" % (self.name, self.score)
         else:
             return "Your hilarity ranking is %d" % self.score
+
+    def describe_record(self, thirdPerson=False):
+        if self.record == 0 and thirdPerson:
+            return "%s is not funny." % self.name
+        elif self.record == 0 and not thirdPerson:
+            return "You're not funny."
+        elif thirdPerson:
+            return "%s's record lol chain is %d, after saying '%s'" % \
+                (self.name, self.record, self.quote)
+        else:
+            return "Your record lol chain is %d, after saying '%s'" % \
+                (self.record, self.quote)

@@ -50,3 +50,19 @@ class SeenTest(plugin_test.PluginTest):
 
         nick('Bob').says('.lols Cat')
         self.shouldSay("Bob: Cat is not funny.")
+
+    def test_lol_record(self):
+        nick('Art').says('a funny thing')
+        self.__lols(5)
+        nick('Art').says('a funnier thing')
+        self.__lols(10)
+        nick('Art').says('a funny thing')
+        self.__lols(5)
+
+        nick('Art').says('.chain')
+        self.shouldSay("Art: Your record lol chain is 10, after saying " +
+                       "'a funnier thing'")
+
+    def __lols(self, number):
+        for i in xrange(number):
+            nick("Nick%d" % i).says("lol")
