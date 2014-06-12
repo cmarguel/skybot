@@ -69,6 +69,15 @@ class SeenTest(plugin_test.PluginTest):
         self.shouldSay("Art: Your record lol chain is 10, after saying " +
                        "'a funnier thing'")
 
+    def test_direct_lol(self):
+        nick('A').says('a funny thing')
+        nick('B').says('a mundane thing')
+        nick('C').says('A: lol')
+        nick('D').says('lol a')
+
+        nick('A').says('.lols')
+        self.shouldSay('A: Your hilarity ranking is 2')
+
     def __lols(self, number):
         for i in xrange(number):
             nick("Nick%d" % i).says("lol")

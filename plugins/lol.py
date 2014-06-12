@@ -23,30 +23,52 @@ def seeninput(paraml, input=None, db=None, bot=None):
     msg = input.msg
     nick = input.nick
 
+    target = last_seen
+
+    if get_parts_if_direct_lol(msg) is not None:        
+        t, m = get_parts_if_direct_lol(msg)
+        if target_is_chatter(t):
+            target, msg = t, m
+
     if is_lol(msg):
-        if last_seen != nick:
-            person = Person.get(last_seen)
+        if target.lower() != nick.lower():
+            person = Person.get(target)
             person.score += 1
             streak += 1
             if person.record <= streak:
                 person.record = streak
                 person.quote = last_quote
             person.save()
-
     elif is_memorable(nick, msg):
         last_seen = nick
         last_quote = msg
         streak = 0
 
+def target_is_chatter(nick):
+    return Person.get(nick) is not None
 
 # Examples of not memorable things: lol, bot commands?
 def is_memorable(nick, msg):
     return not is_lol(msg)
 
-
 def is_lol(msg):
-    return msg.strip() == 'lol'
+    lols = ['lol', 'lmao', 'lols', 'lolz']
+    if msg.strip() in lols:
+        return True
+    return False
 
+def get_parts_if_direct_lol(msg):
+    parts = msg.split(" ")
+
+    if len(parts) == 2:
+        if parts[0][-1] in [':', ','] and is_lol(parts[1]):
+            return parts[0][:-1], parts[1]
+        elif is_lol(parts[0]):
+            return parts[1], parts[0]
+        else:
+            return None
+    else:
+        return None
 
 @hook.command
 def lols(inp, nick='', chan='', db=None, input=None):
