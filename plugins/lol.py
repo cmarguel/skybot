@@ -25,7 +25,7 @@ def seeninput(paraml, input=None, db=None, bot=None):
 
     target = last_seen
 
-    if get_parts_if_direct_lol(msg) is not None:        
+    if get_parts_if_direct_lol(msg) is not None:
         t, m = get_parts_if_direct_lol(msg)
         if target_is_chatter(t):
             target, msg = t, m
@@ -44,18 +44,23 @@ def seeninput(paraml, input=None, db=None, bot=None):
         last_quote = msg
         streak = 0
 
+
 def target_is_chatter(nick):
     return Person.get(nick) is not None
 
 # Examples of not memorable things: lol, bot commands?
+
+
 def is_memorable(nick, msg):
     return not is_lol(msg)
+
 
 def is_lol(msg):
     lols = ['lol', 'lmao', 'lols', 'lolz']
     if msg.strip() in lols:
         return True
     return False
+
 
 def get_parts_if_direct_lol(msg):
     parts = msg.split(" ")
@@ -69,6 +74,7 @@ def get_parts_if_direct_lol(msg):
             return None
     else:
         return None
+
 
 @hook.command
 def lols(inp, nick='', chan='', db=None, input=None):
@@ -105,7 +111,8 @@ class Person(object):
     @classmethod
     def get(cls, nick):
         params = cls.db.execute("select name, score, record, quote from lols\
-                                 where name = ? collate nocase", (nick,)).fetchone()
+                                 where name = ? collate nocase", (nick,)).\
+            fetchone()
         if params is None:
             return Person((nick, 0, 0, None))
         else:
