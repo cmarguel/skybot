@@ -110,6 +110,7 @@ class Person(object):
 
     @classmethod
     def get(cls, nick):
+        nick = nick.strip('_').split('|')[0]
         params = cls.db.execute("select name, score, record, quote from lols\
                                  where name = ? collate nocase", (nick,)).\
             fetchone()
@@ -120,7 +121,7 @@ class Person(object):
 
     def __init__(self, tup):
         name, score, record, quote = tup
-        self.name = name
+        self.name = name.strip('_').split('|')[0]
         self.score = score
         self.record = record
         self.quote = quote

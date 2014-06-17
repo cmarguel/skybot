@@ -78,6 +78,21 @@ class SeenTest(plugin_test.PluginTest):
         nick('A').says('.lols')
         self.shouldSay('A: Your hilarity ranking is 2')
 
+    def test_ignores_nick_variations(self):
+        nick('Art').says('a funny thing')
+        nick('B').says('lol')
+        nick('__Art__').says('a funny thing')
+        nick('B').says('lol')
+        nick('Art|work').says('a funny thing')
+        nick('B').says('lol')
+
+        nick('Art').says('.lols')
+        self.shouldSay('Art: Your hilarity ranking is 3')
+        nick('__Art__').says('.lols')
+        self.shouldSay('__Art__: Your hilarity ranking is 3')
+        nick('Art|work').says('.lols')
+        self.shouldSay('Art|work: Your hilarity ranking is 3')
+
     def __lols(self, number):
         for i in xrange(number):
             nick("Nick%d" % i).says("lol")
