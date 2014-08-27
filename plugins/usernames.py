@@ -62,6 +62,33 @@ def __get_games(nick, chan, db):
     return ret[:-3]
 
 
+def __get_usernames(chan, service, db):
+    names = db.execute("select name, username from usernames where"
+                       " chan=? and service=? order by lower(service)",
+                       (chan, service)).fetchall()
+    if len(names) == 0:
+        return None
+
+    ret = ""
+    for pair in names:
+        name, username = pair
+        ret += "%s: %s | " % (name, username)
+    return ret[:-3]
+
+
+@hook.command
+def usernames(inp, nick='', chan='', db=None, input=None):
+    db_init(db)
+    if inp is None or inp.strip() == "":
+        return None
+
+    lookup = inp.lower()
+    names = __get_usernames(chan, lookup, db)
+    if names is None:
+        return "Nobody seems to be playing that."
+    return '%s -> %s' % (lookup, names)
+
+
 @hook.command
 def games(inp, nick='', chan='', db=None, input=None):
     db_init(db)

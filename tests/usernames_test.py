@@ -8,10 +8,6 @@ class UsernamesTest(plugin_test.PluginTest):
     def setUp(self):
         plugin_test.PluginTest.setUp(self, plugins.usernames)
 
-    def test_no_data(self):
-        nick('A').says('.usernames steam')
-        self.shouldBeSilent()
-
     def test_add_username(self):
         nick('Art').says('.username steam')
         self.shouldSay("Art: Your username for steam isn't registered")
@@ -38,3 +34,17 @@ class UsernamesTest(plugin_test.PluginTest):
 
         nick('Bob').says('.games art')
         self.shouldSay('Bob: art -> 3ds: art2 | steam: art1 | wiiu: art3')
+
+    def test_lookup_users(self):
+        nick('Dan').says('.usernames steam')
+        self.shouldSay('Dan: Nobody seems to be playing that.')
+
+        nick('Art').says('.username steam art')
+        self.shouldSay('Art: Noted: You use steam as "art"')
+        nick('Bob').says('.username steam bob')
+        self.shouldSay('Bob: Noted: You use steam as "bob"')
+        nick('Cat').says('.username steam cat')
+        self.shouldSay('Cat: Noted: You use steam as "cat"')
+
+        nick('Dan').says('.usernames steam')
+        self.shouldSay('Dan: steam -> art: art | bob: bob | cat: cat')
