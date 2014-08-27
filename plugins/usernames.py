@@ -36,7 +36,7 @@ def __insert(nick, chan, service, username, db):
 
 
 @hook.command
-def username(inp, nick='', chan='', db=None, input=None):
+def gamer(inp, nick='', chan='', db=None, input=None):
     db_init(db)
     nick = nick.lower()
 
@@ -77,7 +77,7 @@ def __get_usernames(chan, service, db):
 
 
 @hook.command
-def usernames(inp, nick='', chan='', db=None, input=None):
+def gamers(inp, nick='', chan='', db=None, input=None):
     db_init(db)
     if inp is None or inp.strip() == "":
         return None
