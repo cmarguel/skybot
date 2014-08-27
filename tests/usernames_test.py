@@ -21,3 +21,17 @@ class UsernamesTest(plugin_test.PluginTest):
 
         nick('Art').says('.username steam')
         self.shouldSay('Art: Your steam username is "art"')
+
+    def test_multiple_games(self):
+        nick('Art').says('.games')
+        self.shouldSay('Art: You don\'t have any games registered.')
+
+        nick('Art').says('.username steam art1')
+        self.shouldSay('Art: Noted: You use steam as "art1"')
+        nick('Art').says('.username 3DS art2')
+        self.shouldSay('Art: Noted: You use 3ds as "art2"')
+        nick('Art').says('.username WiiU art3')
+        self.shouldSay('Art: Noted: You use wiiu as "art3"')
+
+        nick('Art').says('.games')
+        self.shouldSay('Art: 3ds: art2 | steam: art1 | wiiu: art3')

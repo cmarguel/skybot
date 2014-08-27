@@ -46,3 +46,21 @@ def username(inp, nick='', chan='', db=None, input=None):
         return __lookup(nick, chan, args[0], db)
     else:
         return __insert(input.nick.lower(), input.chan, args[0], args[1], db)
+
+
+@hook.command
+def games(inp, nick='', chan='', db=None, input=None):
+    db_init(db)
+    nick = nick.lower()
+
+    names = db.execute("select service, username from usernames where"
+                       " name=? and chan=? order by lower(service)",
+                       (nick, chan)).fetchall()
+    if len(names) == 0:
+        return "You don't have any games registered."
+
+    ret = ""
+    for pair in names:
+        service, username = pair
+        ret += "%s: %s | " % (service, username)
+    return ret[:-3]
