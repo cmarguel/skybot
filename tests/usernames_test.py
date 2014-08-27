@@ -66,3 +66,8 @@ class UsernamesTest(plugin_test.PluginTest):
         self.shouldSay('Art: Okay, deleting your info for foobar')
         nick('Art').says('.games')
         self.shouldSay('Art: steam: art1')
+
+    def test_help(self):
+        nick('Art').says('.gamer')
+        self.shouldSay("Art: .gamer gamename | .gamer gamename username "
+                       "| .gamer - gamename")

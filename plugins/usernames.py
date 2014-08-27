@@ -44,6 +44,8 @@ def __delete(nick, chan, service, db):
 
 @hook.command
 def gamer(inp, nick='', chan='', db=None, input=None):
+    if inp is None or inp.strip() == "":
+        return ".gamer gamename | .gamer gamename username | .gamer - gamename"
     db_init(db)
     nick = nick.lower()
 
