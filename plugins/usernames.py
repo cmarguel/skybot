@@ -35,6 +35,12 @@ def __insert(nick, chan, service, username, db):
     return 'Noted: You use %s as "%s"' % (service, username)
 
 
+def __delete(nick, chan, service, db):
+    db.execute("delete from usernames where name=? and chan=? and service=?",
+               (nick, chan, service))
+    return "Okay, deleting your info for %s" % service
+
+
 @hook.command
 def gamer(inp, nick='', chan='', db=None, input=None):
     db_init(db)
@@ -45,6 +51,8 @@ def gamer(inp, nick='', chan='', db=None, input=None):
     if len(args) == 1:
         return __lookup(nick, chan, args[0], db)
     else:
+        if args[0] == '-':
+            return __delete(input.nick.lower(), input.chan, args[1], db)
         return __insert(input.nick.lower(), input.chan, args[0], args[1], db)
 
 
