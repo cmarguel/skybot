@@ -35,3 +35,6 @@ class UsernamesTest(plugin_test.PluginTest):
 
         nick('Art').says('.games')
         self.shouldSay('Art: 3ds: art2 | steam: art1 | wiiu: art3')
+
+        nick('Bob').says('.games art')
+        self.shouldSay('Bob: art -> 3ds: art2 | steam: art1 | wiiu: art3')
