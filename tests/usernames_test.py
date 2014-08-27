@@ -54,8 +54,15 @@ class UsernamesTest(plugin_test.PluginTest):
         self.shouldSay('Art: Noted: You use steam as "art1"')
         nick('Art').says('.gamer 3DS art2')
         self.shouldSay('Art: Noted: You use 3ds as "art2"')
+        nick('Art').says('.gamer foobar baz')
+        self.shouldSay('Art: Noted: You use foobar as "baz"')
+
+        nick('Art').says('.games')
+        self.shouldSay('Art: 3ds: art2 | foobar: baz | steam: art1')
 
         nick('Art').says('.gamer - 3ds')
         self.shouldSay('Art: Okay, deleting your info for 3ds')
+        nick('Art').says('.gamer - foobar')
+        self.shouldSay('Art: Okay, deleting your info for foobar')
         nick('Art').says('.games')
         self.shouldSay('Art: steam: art1')

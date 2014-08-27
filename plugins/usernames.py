@@ -38,6 +38,7 @@ def __insert(nick, chan, service, username, db):
 def __delete(nick, chan, service, db):
     db.execute("delete from usernames where name=? and chan=? and service=?",
                (nick, chan, service))
+    db.commit()
     return "Okay, deleting your info for %s" % service
 
 
