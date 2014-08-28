@@ -7,6 +7,7 @@ class UsernamesTest(plugin_test.PluginTest):
 
     def setUp(self):
         plugin_test.PluginTest.setUp(self, plugins.usernames)
+        self.mayMungeOutput()
 
     def test_add_username(self):
         nick('Art').says('.gamer steam')
