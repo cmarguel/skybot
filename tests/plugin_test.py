@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import unittest
 import sqlite3
 import Queue
@@ -196,9 +198,33 @@ class PluginTest(unittest.TestCase):
         bot.thoughts = []
         reset_db()
 
+        self.__may_munge = False
         self.__prepare_plugins(module)
         if hasattr(module, 'timesince'):
             self.__mock_time(module)
+
+    def mayMungeOutput(self):
+        self.__may_munge = True
+
+    def __resembles(self, a, b):
+        if a == b:
+            return True
+        if a in character_replacements:
+            return unicode(character_replacements[a]) == unicode(b)
+        if b in character_replacements:
+            return unicode(character_replacements[b]) == unicode(a)
+        return False
+
+    def __maybe_munged_equal(self, a, b):
+        if len(a) != len(b):
+            return False
+        for i in xrange(len(a)):
+            c = a[i]
+            d = b[i]
+
+            if c != d and not self.__resembles(c, d):
+                return False
+        return True
 
     def __prepare_plugins(self, module):
         allFunctions = inspect.getmembers(module)
@@ -229,7 +255,10 @@ class PluginTest(unittest.TestCase):
                       expectedMessage)
             return
         thought = bot.thoughts.pop(0)
-        if thought[1] == expectedMessage:
+        if (not self.__may_munge) and thought[1] == expectedMessage:
+            return True
+        if self.__may_munge and \
+                self.__maybe_munged_equal(thought[1], expectedMessage):
             return True
 
         self.fail("Skybot didn't respond with '%s'; got '%s'" %
@@ -283,3 +312,57 @@ def after(period, units="minutes"):
         units = "minutes"
     mock_time.curr_time += period * table[units]
     mock_datetime_handler.update(mock_time.curr_time)
+
+character_replacements = {
+    'a': u'ä',
+    #    'b': 'Б',
+    'c': u'ċ',
+    'd': u'đ',
+    'e': u'ë',
+    'f': u'ƒ',
+    'g': u'ġ',
+    'h': u'ħ',
+    'i': u'í',
+    'j': u'ĵ',
+    'k': u'ķ',
+    'l': u'ĺ',
+    #    'm': 'ṁ',
+    'n': u'ñ',
+    'o': u'ö',
+    'p': u'ρ',
+    #    'q': 'ʠ',
+    'r': u'ŗ',
+    's': u'š',
+    't': u'ţ',
+    'u': u'ü',
+    #    'v': '',
+    'w': u'ω',
+    'x': u'χ',
+    'y': u'ÿ',
+    'z': u'ź',
+    'A': u'Å',
+    'B': u'Β',
+    'C': u'Ç',
+    'D': u'Ď',
+    'E': u'Ē',
+    #    'F': 'Ḟ',
+    'G': u'Ġ',
+    'H': u'Ħ',
+    'I': u'Í',
+    'J': u'Ĵ',
+    'K': u'Ķ',
+    'L': u'Ĺ',
+    'M': u'Μ',
+    'N': u'Ν',
+    'O': u'Ö',
+    'P': u'Р',
+    #    'Q': 'Ｑ',
+    'R': u'Ŗ',
+    'S': u'Š',
+    'T': u'Ţ',
+    'U': u'Ů',
+    #    'V': 'Ṿ',
+    'W': u'Ŵ',
+    'X': u'Χ',
+    'Y': u'Ỳ',
+    'Z': u'Ż'}
