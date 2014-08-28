@@ -98,7 +98,7 @@ def __get_usernames(chan, service, db):
     ret = ""
     for pair in names:
         name, username = pair
-        ret += "%s: %s | " % (munge(name), username)
+        ret += "%s: %s | " % (munge(name, 1), username)
     return ret[:-3]
 
 
