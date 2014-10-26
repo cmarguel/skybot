@@ -1,7 +1,19 @@
+# -*- coding: utf-8 -*-
+
 def munge(inp, munge_count=0):
     reps = 0
 
-    character_replacements = {
+
+    for n in xrange(len(inp)):
+        rep = character_replacements.get(inp[n])
+        if rep:
+            inp = inp[:n] + unicode(rep) + inp[n + 1:]
+            reps += 1
+            if reps == munge_count:
+                break
+    return inp
+
+character_replacements = {
     'a': u'ä',
     #    'b': 'Б',
     'c': u'ċ',
@@ -54,14 +66,3 @@ def munge(inp, munge_count=0):
     'X': u'Χ',
     'Y': u'Ỳ',
     'Z': u'Ż'}
-
-
-    for n in xrange(len(inp)):
-        rep = character_replacements.get(inp[n])
-        if rep:
-            inp = inp[:n] + unicode(rep) + inp[n + 1:]
-            reps += 1
-            if reps == munge_count:
-                break
-    return inp
-
