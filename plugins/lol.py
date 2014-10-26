@@ -1,4 +1,6 @@
-from util import hook
+# -*- coding: utf-8 -*-
+
+from util import hook, munge
 
 last_seen = None
 last_quote = None
@@ -75,6 +77,18 @@ def get_parts_if_direct_lol(msg):
     else:
         return None
 
+def retrieve_top_lollers(db, toplollercount=5):
+    db_init(db)
+
+    results = db.execute("SELECT name, score FROM lols ORDER BY score DESC").fetchmany(size=toplollercount)
+    ret = ""
+    rank = 1
+    for pair in results:
+        user, score = pair
+        ret += "#%d %s:%d | " % (rank, munge.munge(user, 1), score)
+        rank += 1
+    return ret[:-3]
+
 
 @hook.command
 def lols(inp, nick='', chan='', db=None, input=None):
@@ -100,6 +114,14 @@ def chain(inp, nick='', chan='', db=None, input=None):
 
     person = Person.get(nick)
     return person.describe_record(thirdPerson)
+
+@hook.command
+def toplols(inp, nick='', chan='', db=None, input=None):
+    db_init(db)
+
+    return retrieve_top_lollers(db)
+
+
 
 
 class Person(object):
