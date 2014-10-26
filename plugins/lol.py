@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from util import hook, munge
 
 last_seen = None
@@ -78,12 +80,12 @@ def get_parts_if_direct_lol(msg):
 def retrieve_top_lollers(db, toplollercount=5):
     db_init(db)
 
-    results = db.execute("SELECT name, score FROM lols ORDER BY score").fetchmany(size=toplollercount)
+    results = db.execute("SELECT name, score FROM lols ORDER BY score DESC").fetchmany(size=toplollercount)
     ret = ""
     rank = 1
     for pair in results:
         user, score = pair
-        ret += "#%d %s:%d | " % (rank, munge(user, 1), score)
+        ret += "#%d %s:%d | " % (rank, munge.munge(user, 1), score)
         rank += 1
     return ret[:-3]
 
