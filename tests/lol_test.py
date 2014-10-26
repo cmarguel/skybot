@@ -7,6 +7,7 @@ class SeenTest(plugin_test.PluginTest):
 
     def setUp(self):
         plugin_test.PluginTest.setUp(self, plugins.lol)
+        self.mayMungeOutput()
 
     def test_no_change_if_lol_is_first_message_seen(self):
         nick('A').says('lol')
@@ -93,6 +94,32 @@ class SeenTest(plugin_test.PluginTest):
         nick('Art|work').says('.lols')
         self.shouldSay('Art|work: Your hilarity ranking is 3')
 
+    def test_top_lollers(self):
+        init_table = [('A', 1),
+                      ('B', 20),
+                      ('C', 40),
+                      ('D', 60),
+                      ('E', 70),
+                      ('F', 80),
+                      ('G', 90),
+                      ('H', 100),
+                      ('I', 200),
+                      ('J', 300),
+                      ('K', 300),
+                      ('L', 300)]
+        self.__multi_lols(init_table)
+        nick("Dummy").says(".toplols")
+        self.shouldSay('Dummy: Top lolers are a bunch of butts')
+
+
     def __lols(self, number):
         for i in xrange(number):
             nick("Nick%d" % i).says("lol")
+
+    #populate db with multiple lol counts for test_top_lollers
+    # initial_table is a list of (NAME, LOL_COUNT) tuples
+    def __multi_lols(self, initial_table):
+        for t in initial_table:
+            nick(t[0]).says('a funny thing')
+            self.__lols(t[1])
+
