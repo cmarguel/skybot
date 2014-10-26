@@ -3,7 +3,7 @@ import plugins.lol
 from plugin_test import *
 
 
-class SeenTest(plugin_test.PluginTest):
+class LolTest(plugin_test.PluginTest):
 
     def setUp(self):
         plugin_test.PluginTest.setUp(self, plugins.lol)
@@ -95,22 +95,29 @@ class SeenTest(plugin_test.PluginTest):
         self.shouldSay('Art|work: Your hilarity ranking is 3')
 
     def test_top_lollers(self):
-        init_table = [('A', 1),
-                      ('B', 20),
-                      ('C', 40),
-                      ('D', 60),
-                      ('E', 70),
-                      ('F', 80),
-                      ('G', 90),
-                      ('H', 100),
-                      ('I', 200),
-                      ('J', 300),
-                      ('K', 300),
-                      ('L', 300)]
+        init_table = [('Alfa', 1),
+                      ('Bravo', 20),
+                      ('Charlie', 40),
+                      ('Delta', 60),
+                      ('Echo', 70),
+                      ('Foxtrot', 80),
+                      ('Golf', 90),
+                      ('Hotel', 100),
+                      ('India', 200),
+                      ('Juliet', 300),
+                      ('Kilo', 300),
+                      ('Lima', 300)]
         self.__multi_lols(init_table)
         nick("Dummy").says(".toplols")
-        self.shouldSay('Dummy: Top lolers are a bunch of butts')
-
+        self.shouldSay("Dummy: #1 Juliet:300 | #2 Kilo:300 | #3 Lima:300 | #4 India:200 | #5 Hotel:100")
+        nick("Juliet").says("wherefore art thou romeo")
+        self.__lols(5)
+        nick("Dummy").says(".toplols")
+        self.shouldSay("Dummy: #1 Juliet:305 | #2 Kilo:300 | #3 Lima:300 | #4 India:200 | #5 Hotel:100")
+        nick("Lima").says("hello butts")
+        self.__lols(20)
+        nick("Dummy").says(".toplols")
+        self.shouldSay("Dummy: #1 Lima:320 | #2 Juliet:305 | #3 Kilo:300 | #4 India:200 | #5 Hotel:100")
 
     def __lols(self, number):
         for i in xrange(number):
