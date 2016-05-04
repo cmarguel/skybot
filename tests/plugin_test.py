@@ -142,6 +142,7 @@ class FakeBot():
 class TestIRC(irc.IRC):
 
     def __init__(self):
+        self.conn = ()
         self.set_conf({'nick': 'skybot', 'server': 'testirc.testirc.net'})
         self.out = Queue.Queue()  # responses from the server are placed here
         self.thoughts = []
