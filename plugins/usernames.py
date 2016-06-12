@@ -98,12 +98,12 @@ def __get_usernames(chan, service, db):
     ret = ""
     for pair in names:
         name, username = pair
-        ret += "%s: %s | " % (munge(name, 1), username)
+        ret += "%s: %s | " % (name, username)
     return ret[:-3]
 
 
 @hook.command
-def gamers(inp, nick='', chan='', db=None, input=None):
+def gamers(inp, nick='', chan='', pm=None, db=None, input=None):
     db_init(db)
     if inp is None or inp.strip() == "":
         return None
@@ -112,7 +112,7 @@ def gamers(inp, nick='', chan='', db=None, input=None):
     names = __get_usernames(chan, lookup, db)
     if names is None:
         return "Nobody seems to be playing that."
-    return '%s -> %s' % (lookup, names)
+    pm('%s -> %s' % (lookup, names))
 
 
 @hook.command
