@@ -49,6 +49,7 @@ class UsernamesTest(plugin_test.PluginTest):
 
         nick('Dan').says('.gamers steam')
         self.shouldPM('Dan', 'steam -> art: art | bob: bob | cat: cat')
+        self.shouldSay('Dan: Okay, PMed you a list of steam users')
 
     def test_delete(self):
         nick('Art').says('.gamer steam art1')

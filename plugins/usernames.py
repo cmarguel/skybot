@@ -113,6 +113,7 @@ def gamers(inp, nick='', chan='', pm=None, db=None, input=None):
     if names is None:
         return "Nobody seems to be playing that."
     pm('%s -> %s' % (lookup, names))
+    return "Okay, PMed you a list of %s users" % lookup
 
 
 @hook.command
