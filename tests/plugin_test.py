@@ -280,8 +280,12 @@ class PluginTest(unittest.TestCase):
                         %s this PM: %s" % (expectedRecipient, expectedMessage))
             return
         thought = bot.thoughts.pop(0)
-        if thought[0].lower() == expectedRecipient.lower() and thought[1] == expectedMessage:
-            return True
+        if thought[0].lower() == expectedRecipient.lower():
+            if (not self.__may_munge) and thought[1] == expectedMessage:
+                return True
+            if self.__may_munge and \
+                    self.__maybe_munged_equal(thought[1], expectedMessage):
+                return True
         self.fail("Skybot is supposed to tell %s '%s'; instead told %s '%s'" %
                   (expectedRecipient, expectedMessage, thought[0], thought[1]))
 
