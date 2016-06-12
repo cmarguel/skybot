@@ -142,6 +142,7 @@ class FakeBot():
 class TestIRC(irc.IRC):
 
     def __init__(self):
+        self.conn = ()
         self.set_conf({'nick': 'skybot', 'server': 'testirc.testirc.net'})
         self.out = Queue.Queue()  # responses from the server are placed here
         self.thoughts = []
@@ -169,6 +170,10 @@ class Nick:
 
     def says(self, msg):
         out = construct_out_params(self.nick, msg)
+        main.main(conn, out)
+
+    def pms(self, msg):
+        out = construct_out_params(self.nick.lower(), msg, self.nick.lower())
         main.main(conn, out)
 
 
@@ -275,7 +280,7 @@ class PluginTest(unittest.TestCase):
                         %s this PM: %s" % (expectedRecipient, expectedMessage))
             return
         thought = bot.thoughts.pop(0)
-        if thought[0] == expectedRecipient and thought[1] == expectedMessage:
+        if thought[0].lower() == expectedRecipient.lower() and thought[1] == expectedMessage:
             return True
         self.fail("Skybot is supposed to tell %s '%s'; instead told %s '%s'" %
                   (expectedRecipient, expectedMessage, thought[0], thought[1]))
