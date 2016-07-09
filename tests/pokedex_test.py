@@ -21,3 +21,10 @@ class PokedexTest(plugin_test.PluginTest):
     def test_invalid_pokemon(self):
         nick("Ash").says(".pokedex pika pika pi")
         self.shouldSay("Ash: Missingno")
+
+    def x_test_caching(self):
+        print "Ash is asking now."
+        nick("Ash").says(".pokedex pikachu")
+        print "Brock is asking now."
+        nick("Brock").says(".pokedex pikachu")
+        print "Done."
