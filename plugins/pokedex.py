@@ -1,6 +1,7 @@
 from util import hook, http
 import re
 import random
+import sys
 
 
 def db_init(db):
@@ -33,6 +34,9 @@ def pokedex(inp, nick='', chan='', db=None, input=None):
 
     db_init(db)
 
+    reload(sys)
+    sys.setdefaultencoding('utf8')
+
     base_url = "http://pokeapi.co/api/v2/pokemon-species/"
 
     default_language = "en"
@@ -48,7 +52,8 @@ def pokedex(inp, nick='', chan='', db=None, input=None):
     requested_language = default_language
 
     flavors = get_flavors(db, query, requested_language)
-    if flavors and len(flavors) > 1:
+    if flavors and len(flavors) > 0:
+        print flavors
         rand = random.randint(0, len(flavors) - 1)
         return flavors[rand][1]
 
@@ -74,7 +79,20 @@ def cache_flavors(db, entry, requested_language, requested_version):
         language = flavor_entry["language"]["name"]
         version = flavor_entry["version"]["name"]
         if requested_language == language:
-            flavor = flavor_entry["flavor_text"].replace('\n', ' ')
+            flavor = flavor_entry["flavor_text"].encode('utf-8').strip()
+            flavor = flavor.replace('\xa9', '')
+            flavor = flavor.replace('\xe9', 'e')
+            flavor = flavor.replace('\xc3', 'e')
+            flavor = flavor.replace('\xad', '')
+            flavor = flavor.replace('\f', ' ')
+            flavor = flavor.replace('\n', ' ')
+            flavor = flavor.replace('\u2019', '\'')
+            filtered = ""
+            for c in flavor:
+                if ord(c) < 128:
+                    filtered += c
+
+            flavor = filtered.encode('ascii')
             cache(db, entry["id"], name, language, version, flavor)
             # return flavor
     return "Missingno"
