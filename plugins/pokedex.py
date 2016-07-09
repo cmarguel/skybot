@@ -31,6 +31,7 @@ def get(db, query, language, version):
 
 
 @hook.command
+@hook.command("dex")
 def pokedex(inp, nick='', chan='', db=None, input=None):
     ".pokedex name|id"
 
