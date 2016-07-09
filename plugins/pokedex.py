@@ -30,7 +30,7 @@ def get_flavors(db, query, language):
 @hook.command
 @hook.command("dex")
 def pokedex(inp, nick='', chan='', db=None, input=None):
-    ".pokedex name|id"
+    "!pokedex name|id"
 
     db_init(db)
 
@@ -51,11 +51,9 @@ def pokedex(inp, nick='', chan='', db=None, input=None):
     requested_version = default_version
     requested_language = default_language
 
-    flavors = get_flavors(db, query, requested_language)
-    if flavors and len(flavors) > 0:
-        print flavors
-        rand = random.randint(0, len(flavors) - 1)
-        return flavors[rand][1]
+    flavor = get_random_flavor(db, query, requested_language)
+    if flavor:
+        return flavor
 
     try:
         entry = http.get_json(base_url + query)
@@ -68,8 +66,12 @@ def pokedex(inp, nick='', chan='', db=None, input=None):
 
 def get_random_flavor(db, query, language):
     flavors = get_flavors(db, query, language)
-    rand = random.randint(0, len(flavors) - 1)
-    return flavors[rand][1]
+    if flavors:
+        rand = random.randint(0, len(flavors) - 1)
+
+        return flavors[rand][1]
+    else:
+        return None
 
 
 def cache_flavors(db, entry, requested_language, requested_version):
