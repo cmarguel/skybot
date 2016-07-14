@@ -72,7 +72,7 @@ def get_random_flavor(db, query, language):
         prelude = "#%s %s - " % (flavors[rand][0], flavors[rand][1])
         post = " (%s)" % flavors[rand][2]
 
-        return prelude + flavors[rand][3] + post
+        return prelude + asciify(flavors[rand][3]) + post
     else:
         return None
 
