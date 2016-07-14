@@ -70,7 +70,8 @@ def get_random_flavor(db, query, language):
         rand = random.randint(0, len(flavors) - 1)
 
         prelude = "#%s %s - " % (flavors[rand][0], flavors[rand][1])
-        post = " (%s)" % flavors[rand][2]
+        post = " (%s) [%s]" % (flavors[rand][2],
+               "http://www.serebii.net/art/%s.png" % flavors[rand][0])
 
         return prelude + asciify(flavors[rand][3]) + post
     else:
